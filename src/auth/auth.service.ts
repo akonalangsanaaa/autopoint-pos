@@ -3,7 +3,8 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { UsersService } from '../users/users.service';
 import { LoginDto } from './dto/login.dto';
-import { AccountStatus } from '../users/user.entity';
+import { AccountStatus, UserRole } from '../users/user.entity';
+import { RegisterUserDto } from '../users/dto/create-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -11,6 +12,14 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
   ) {}
+
+  async register(dto: RegisterUserDto) {
+    await this.usersService.create(
+      { ...dto, role: UserRole.CASHIER },
+      AccountStatus.INACTIVE,
+    );
+    return { message: 'Account created. Ask an administrator to activate it before signing in.' };
+  }
 
   async login(loginDto: LoginDto) {
     const user = await this.usersService.findByUsername(loginDto.username);

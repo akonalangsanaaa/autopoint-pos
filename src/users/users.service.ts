@@ -52,7 +52,10 @@ export class UsersService {
     return { data, page, limit, totalItems: total };
   }
 
-  async create(createUserDto: CreateUserDto): Promise<Partial<User>> {
+  async create(
+    createUserDto: CreateUserDto,
+    accountStatus = AccountStatus.ACTIVE,
+  ): Promise<Partial<User>> {
     const existing = await this.findByUsername(createUserDto.username);
     if (existing) {
       throw new ConflictException({
@@ -73,7 +76,7 @@ export class UsersService {
       username: createUserDto.username,
       passwordHash,
       role: createUserDto.role,
-      accountStatus: AccountStatus.ACTIVE,
+      accountStatus,
     });
 
     const saved = await this.userRepository.save(user);

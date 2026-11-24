@@ -50,6 +50,7 @@ function FormFields({ fields, initial }) {
 
 function App() {
   const [session, setSession] = useState(null);
+  const [registering, setRegistering] = useState(false);
   const [page, setPage] = useState('Overview');
   const [data, setData] = useState({});
   const [error, setError] = useState('');
@@ -136,14 +137,34 @@ function App() {
 
   if (!session) return <main className="login">
     <section className="login-brand"><div className="brand-mark">AP</div><p className="eyebrow">AUTOPOINT</p><h1>{title}</h1><p>Sales, stock and customer records in one workspace.</p></section>
-    <section className="login-form"><form onSubmit={event => {
+    <section className="login-form"><form key={String(registering)} onSubmit={event => {
       event.preventDefault();
       const credentials = Object.fromEntries(new FormData(event.currentTarget));
-      perform(async () => setSession(await request('sessions', null, 'POST', credentials)));
-    }}><h2>Sign in</h2><p>Use your staff account to open the POS.</p>{alert}
-      <label>Username<input name="username" autoComplete="username" required /></label>
-      <label>Password<input type="password" name="password" autoComplete="current-password" required /></label>
-      <button className="primary" disabled={busy}>{busy ? 'Signing in…' : 'Sign in'}</button>
+      perform(async () => {
+        if (registering) {
+          const result = await request('registrations', null, 'POST', credentials);
+          setRegistering(false);
+          setNotice(result.message);
+          return;
+        }
+        setSession(await request('sessions', null, 'POST', credentials));
+      });
+    }}><h2>{registering ? 'Create account' : 'Sign in'}</h2>
+      <p>{registering ? 'An administrator must activate your staff account before you can sign in.' : 'Use your staff account to open the POS.'}</p>
+      {alert}{notice && <div className="notice" role="status">{notice}</div>}
+      {registering && <>
+        <label>First name<input name="firstName" autoComplete="given-name" maxLength={50} required /></label>
+        <label>Last name<input name="lastName" autoComplete="family-name" maxLength={50} required /></label>
+      </>}
+      <label>Username<input name="username" autoComplete="username" maxLength={30} required /></label>
+      <label>Password<input type="password" name="password" autoComplete={registering ? 'new-password' : 'current-password'} minLength={registering ? 8 : undefined} aria-describedby={registering ? 'registration-password-help' : undefined} required /></label>
+      {registering && <small id="registration-password-help">Use at least 8 characters, including uppercase and lowercase letters and a number or symbol.</small>}
+      <button className="primary" disabled={busy}>{registering ? 'Register' : 'Sign in'}</button>
+      <button className="quiet" type="button" disabled={busy} onClick={() => {
+        setRegistering(!registering);
+        setError('');
+        setNotice('');
+      }}>{registering ? 'Back to sign in' : 'Create account'}</button>
     </form></section>
   </main>;
 
