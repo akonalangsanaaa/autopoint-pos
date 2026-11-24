@@ -32,4 +32,3 @@ coverage/
 public/app.js
 public/app.css
 .env.*
-!.env.example

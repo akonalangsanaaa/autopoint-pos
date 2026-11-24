@@ -9,7 +9,7 @@ NestJS 10, TypeORM 0.3, MySQL, JWT with bcrypt-compatible password hashing, Reac
 ## Run on Windows
 
 1. Install Node.js 20 or 22 and start MySQL. Create the database with `CREATE DATABASE pos_automotive CHARACTER SET utf8mb4;`. Use a MySQL account with access to that database.
-2. Copy `.env.example` to `.env`. Fill in your database settings, a randomly generated `JWT_SECRET`, and a unique `POS_ADMIN_PASSWORD`. Keep `.env` local.
+2. Create a local `.env` file with `DB_HOST=127.0.0.1`, `DB_PORT=3306`, `DB_DATABASE=pos_automotive`, and your MySQL account in `DB_USERNAME` and `DB_PASSWORD`. Set a randomly generated `JWT_SECRET` and a unique `POS_ADMIN_PASSWORD`. Use one setting per line and keep the file local.
 3. From the project directory, run:
 
    ```powershell
