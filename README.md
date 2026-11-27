@@ -32,7 +32,7 @@ All API paths start with `/api/v1`. Login returns a JWT via `POST /sessions`. Us
 
 - [Postman collection](submission/AutoPoint.postman_collection.json) contains 44 ordered requests with expected status codes. Import it, set the local `password` collection variable, and run on a practice database. Start with **Reject request without JWT** so the run gets unique sample keys. The run creates demonstration records.
 - [SQL export](submission/pos_automotive.sql) is a schema-only export. Import it into an empty MySQL database if you prefer to create the schema before startup. Set `DB_SYNCHRONIZE=false` when using the imported schema. Start with an empty database to avoid table-name conflicts during import.
-- [Technical documentation](submission/AutoPoint-Technical-Documentation.pdf) describes the architecture, database, API, and verification. Add your final GitHub and narrated video links to the cover before submission.
+- [Final project documentation](submission/AutoPoint-Final-Project-Documentation.pdf) describes the architecture, database, API, and verification. The cover links to this repository and the narrated demonstration.
 
 To repeat API verification from PowerShell after starting the app:
 
@@ -50,14 +50,14 @@ Workbench is the desktop client used to inspect and query the MySQL server. In W
 | Connection field | Local demonstration |
 | --- | --- |
 | Hostname | 127.0.0.1 |
-| Port | 33317 |
+| Port | 33318 |
 | Username | pos_local |
 | Password | DB_PASSWORD in .env |
 | Default Schema | pos_automotive |
 
 For your own MySQL service, use its configured port (commonly 3306) and user. To review a checkout in the demo, refresh **Schemas**, expand **pos_automotive**, then inspect sales, sale_items, payments, receipts and inventory. The SQL export can also be opened as a SQL script in Workbench and executed with an empty target schema selected.
 
-The local demo uses MySQL Community Server 26.10 and the POS on port 3001. Set the Postman baseUrl to http://localhost:3001/api/v1 when using this demo.
+The local demo uses MySQL Community Server 8.0.46 and the POS on port 3001. On the original demo workstation, to restart the local MySQL instance after a reboot, run `.\.local-mysql\migration-8.0\start-mysql.ps1` from the project directory. Set the Postman baseUrl to http://localhost:3001/api/v1 when using this demo.
 
 ## Final project walkthrough
 
@@ -70,6 +70,4 @@ Use the collection in Postman and record your own narration in this order:
 5. Run the request without a token and show the 401 response.
 6. In Workbench, show the product deletion or a completed sale, its payment and receipt, and the matching inventory change.
 
-Rebuild the technical documentation with your actual repository and video URLs by running python scripts/build-documentation.py REPOSITORY_URL VIDEO_URL in an environment with ReportLab.
-
-Oracle documents full Workbench support for MySQL 8.0. Some Workbench features may be unavailable with later MySQL versions. The POS and schema export were verified with MySQL Community Server 26.10.
+Oracle documents full Workbench support for MySQL 8.0. Some Workbench features may be unavailable with later MySQL versions. The POS database was migrated from MySQL 26.10 to MySQL 8.0.46. The migration compared the rows, columns, indexes, and foreign keys in all nine tables.
